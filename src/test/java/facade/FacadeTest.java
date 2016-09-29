@@ -8,6 +8,7 @@ package facade;
 import entity.Person;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,11 +22,22 @@ import static org.junit.Assert.*;
  */
 public class FacadeTest {
     
+    static IFacade facade;
+    static int id;
+    
     public FacadeTest() {
     }
     
     @BeforeClass
     public static void setUpClass() {
+        Person p = new Person();
+        p.setFname("a");
+        p.setLname("");
+        p.setPnumber("123");
+        facade = new Facade();
+        facade.addEntityManagerFactory(Persistence.createEntityManagerFactory("persistenceunit"));
+        Person returned = facade.addPerson(p);
+        id = returned.getPersonid();
     }
     
     @AfterClass
@@ -41,57 +53,14 @@ public class FacadeTest {
     }
 
     /**
-     * Test of addEntityManagerFactory method, of class Facade.
-     */
-    @Test
-    public void testAddEntityManagerFactory() {
-        System.out.println("addEntityManagerFactory");
-        
-    }
-
-    /**
-     * Test of addPerson method, of class Facade.
-     */
-    @Test
-    public void testAddPerson() {
-        System.out.println("addPerson");
-        
-    }
-
-    /**
      * Test of deletePerson method, of class Facade.
      */
     @Test
     public void testDeletePerson() {
-        System.out.println("deletePerson");
-        
-    }
-
-    /**
-     * Test of getPerson method, of class Facade.
-     */
-    @Test
-    public void testGetPerson() {
-        System.out.println("getPerson");
-       
-    }
-
-    /**
-     * Test of getPeople method, of class Facade.
-     */
-    @Test
-    public void testGetPeople() {
-        System.out.println("getPeople");
-       
-    }
-
-    /**
-     * Test of editPerson method, of class Facade.
-     */
-    @Test
-    public void testEditPerson() {
-        System.out.println("editPerson");
-        
+        int beforeTestSize = facade.getPeople().size();
+        facade.deletePerson(id);
+        int afterTestSize = facade.getPeople().size();
+        assertEquals(beforeTestSize, afterTestSize+1);
     }
     
 }

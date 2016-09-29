@@ -5,7 +5,7 @@
  */
 
 $(document).ready(function () {
-
+    $("#failed").hide();
     loadEvents();
 
 });
@@ -43,8 +43,9 @@ function loadEvents() {
             });
             editable();
         },
-        error: function (res) {
-            console.log("Error");
+        error: function (error) {
+            var json = JSON.parse(error.responseText);
+            $("#failed").show().html(json["msg"]);
         }
     });
 
@@ -66,10 +67,9 @@ function loadEvents() {
             url: 'api/person',
             type: 'PUT',
             contentType: 'application/json',
-            data: JSON.stringify(person)
-        }).done(function (res) {
-            alert(res);
-            $('#person-tbody').append(
+            data: JSON.stringify(person),
+            success: function (res) {
+                $('#person-tbody').append(
                         "<tr>" +
                         "<td class='tabletd'>" + res.personid + "</td>" +
                         "<td class='tabletd'>" + res.fname + "</td>" +
@@ -79,45 +79,59 @@ function loadEvents() {
                         "</tr>"
                         );
                 editable();
+            },
+            error: function (error) {
+                var json = JSON.parse(error.responseText);
+                $("#failed").show().html(json["msg"]);
+            }
         });
     });
 }
 
 function editable() {
-    
+
     $(".del").click(function () {
         var row = $(this).closest('tr');
         row.remove();
         $.ajax({
             url: 'api/person/' + $(row).find("td:first-child").text(),
-            type: 'DELETE'
-        }).done(function () {
-            alert("We are done");
-            $('#person-tbody').remove($(row));
+            type: 'DELETE',
+            success: function () {
+                $('#person-tbody').remove($(row));
+            },
+            error: function (error) {
+                var json = JSON.parse(error.responseText);
+                $("#failed").show().html(json["msg"]);
+            }
         });
     });
 
     $(".edit").click(function () {
         var row = $(this).closest('tr');
         var person = {
-            personid : $(row).find("td:first-child").text(),
+            personid: $(row).find("td:first-child").text(),
             fname: $("#fname").val(),
             lname: $("#lname").val(),
-            pnumber: $("#fname").val()
+            pnumber: $("#pnumber").val()
         };
         $.ajax({
             url: 'api/person',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(person)
-        }).done(function(res) {
-            $(row).find("td:nth-child(2)").text(res.fname);
-            $(row).find("td:nth-child(3)").text(res.lname);
-            $(row).find("td:nth-child(4)").text(res.pnumber);
-            location.reload();
+            data: JSON.stringify(person),
+            success: function (res) {
+                $(row).find("td:nth-child(2)").text(res.fname);
+                $(row).find("td:nth-child(3)").text(res.lname);
+                $(row).find("td:nth-child(4)").text(res.pnumber);
+                location.reload();
+            },
+            error: function (error) {
+                var json = JSON.parse(error.responseText);
+                $("#failed").show().html(json["msg"]);
+            }
         });
     });
-    
+
 }
 
 

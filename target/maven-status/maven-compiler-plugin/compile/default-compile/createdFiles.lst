@@ -1,9 +1,14 @@
+exception\ValidationErrorException.class
 facade\IFacade.class
-rest\ApplicationConfig.class
-converter\IJSONConverter.class
 converter\JSONConverter.class
 entity\Person.class
-entity\test\Person_.class
+exception\GenericExceptionMapper.class
 entity\Person_.class
+exception\ValidationErrorMapper.class
 facade\Facade.class
 rest\PersonResource.class
+rest\ApplicationConfig.class
+converter\IJSONConverter.class
+entity\test\Person_.class
+exception\PersonNotFoundException.class
+exception\PersonNotFoundMapper.class

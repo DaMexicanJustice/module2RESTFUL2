@@ -9,6 +9,7 @@ import entity.Person;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 /**
@@ -34,7 +35,7 @@ public class Facade implements IFacade {
     }
 
     @Override
-    public Person deletePerson(int id) {
+    public Person deletePerson(int id) throws NoResultException {
         EntityManager em = emf.createEntityManager();
         TypedQuery<Person> result = em.createNamedQuery("Person.findByPersonid", Person.class);
         Person toBeDeleted = result.setParameter("personid", id).getSingleResult();
@@ -45,7 +46,7 @@ public class Facade implements IFacade {
     }
 
     @Override
-    public Person getPerson(int id) {
+    public Person getPerson(int id) throws NoResultException {
         EntityManager em = emf.createEntityManager();
         TypedQuery<Person> result = em.createNamedQuery("Person.findByPersonid", Person.class);
         Person personFound = result.setParameter("personid", id).getSingleResult();
@@ -61,7 +62,7 @@ public class Facade implements IFacade {
     }
 
     @Override
-    public Person editPerson(Person p) {
+    public Person editPerson(Person p) throws NoResultException {
         System.out.println(p.getPersonid() + p.getFname() + p.getLname() + p.getPnumber());
         EntityManager em = emf.createEntityManager();
         TypedQuery<Person> result = em.createNamedQuery("Person.findByPersonid", Person.class);
