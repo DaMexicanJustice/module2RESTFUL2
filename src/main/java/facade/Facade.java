@@ -20,6 +20,9 @@ public class Facade implements IFacade {
 
     private EntityManagerFactory emf;
 
+    public Facade() {
+    }
+    
     @Override
     public void addEntityManagerFactory(EntityManagerFactory emf) {
         this.emf = emf;
@@ -35,14 +38,13 @@ public class Facade implements IFacade {
     }
 
     @Override
-    public Person deletePerson(int id) throws NoResultException {
+    public void deletePerson(int id) throws NoResultException {
         EntityManager em = emf.createEntityManager();
         TypedQuery<Person> result = em.createNamedQuery("Person.findByPersonid", Person.class);
-        Person toBeDeleted = result.setParameter("personid", id).getSingleResult();
+        Person toDelete = result.setParameter("personid", id).getSingleResult();
         em.getTransaction().begin();
-        em.remove(toBeDeleted);
+        em.remove(toDelete);
         em.getTransaction().commit();
-        return toBeDeleted;
     }
 
     @Override

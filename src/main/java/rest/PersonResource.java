@@ -74,50 +74,53 @@ public class PersonResource {
         return jsonC.ListToJson(people);
     }
 
-    @PUT
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String addPerson(String jsonPerson) throws ValidationErrorException {
+//        return "Hello from add";
+//        return jsonPerson;
+//        
         Person person = jsonC.JsonToPerson(jsonPerson);
-        
-        if (person.getFname().isEmpty() || person.getLname().isEmpty()) {
-            throw new ValidationErrorException("Missing first name or last name");
-        }
-        
+//        
+//        if (person.getFname().isEmpty() || person.getLname().isEmpty()) {
+//            throw new ValidationErrorException("Missing first name or last name");
+//        }
+//        
         Person p = facade.addPerson(person);
-        return jsonC.PersonToJson(p);
+        return jsonPerson;
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public String editPerson(String jsonPerson) throws PersonNotFoundException, ValidationErrorException {
-
         try {
             Person person = jsonC.JsonToPerson(jsonPerson);
-            if (person.getFname().isEmpty() || person.getLname().isEmpty()) {
-                throw new ValidationErrorException("First name or last name is missing");
-            }
+
+//            if (person.getFname().isEmpty() || person.getLname().isEmpty()) {
+//                throw new ValidationErrorException("First name or last name is missing");
+//            }
             Person p = facade.editPerson(jsonC.JsonToPerson(jsonPerson));
             return jsonC.PersonToJson(p);
         } catch (NoResultException ex) {
             throw new PersonNotFoundException("No person with provided id found");
         }
-
     }
 
     @DELETE
-    @Path("{id}")
-    //@Produces({ MediaType.TEXT_PLAIN})
-    public void deletePerson(@PathParam("id") int id) throws PersonNotFoundException {
+    @Path("{id : \\d+}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String deletePerson(@PathParam("id") int id) throws PersonNotFoundException {
+        System.out.println("My DELETE person: " + id);
         try {
-        Person p = facade.getPerson(id);
-        if (p == null) {
-            throw new PersonNotFoundException("Could not delete. No person wiht provided id exists");
-        }
-        facade.deletePerson(id);
+            Person p = facade.getPerson(id);
+            if (p == null) {
+                throw new PersonNotFoundException("Could not delete. No person wiht provided id exists");
+            }
+            facade.deletePerson(id);
+            return "Deleted person with id: " + id;
         } catch (NoResultException ex) {
             throw new PersonNotFoundException("No person with provided id found");
         }
     }
-
 }

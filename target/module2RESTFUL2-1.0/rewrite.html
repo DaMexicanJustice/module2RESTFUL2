@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html ng-app="myApp" ng-controller="myControl as ctrl">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+        <link href="css/style.css" rel="stylesheet" type="text/css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular-route.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+    </head>
+    <body>
+        <div class="container">
+            <h1>People</h1>
+            Message from ctrl: {{ctrl.msg}}
+
+            <h2>How to:</h2>
+            <p>Use the input fields to specify first name, last name and phone number. <br>
+                Then either press add to make a new entry with those values, <br>
+                or click edit to change that entry's values to the new ones.
+            </p>
+
+            <table class="table">
+                <thead class="thead">
+                    <tr class="headtr">
+                        <td class="tabletd">ID</td>
+                        <td class="tabletd">First Name</td>
+                        <td class="tabletd">Last Name</td>
+                        <td class="tabletd">Phone Number</td>
+                        <td class="tabletd">Edit</td>
+                    </tr>
+                </thead>
+                <tbody class="tbody" id="person-tbody" ng-repeat="person in ctrl.people">
+                <td ng-bind="person.personid"></td>
+                <td ng-bind="person.fname"></td>
+                <td ng-bind="person.lname"></td>
+                <td ng-bind="person.pnumber"></td>
+                <td><input value="delete" type="button" ng-click="ctrl.deletePerson(person.personid)"> / <input value="change" type="button" ng-click="ctrl.editPerson(person.personid, fname, lname, pnumber)"></td>
+                </tbody>
+            </table>
+            <div class="alert alert-danger" role="alert" ng-hide="!ctrl.show" ng-bind="ctrl.error"></div>
+            <button ng-click="ctrl.addPerson(fname, lname, pnumber)">Add person</button>
+            <a href="http://localhost:8084/module2RESTFUL2/rewrite.html"><button value="Refresh">Refresh</button></a>
+            <br><br>
+            First Name: 
+            <input id="fname" type="text" ng-model="fname"> <br>
+            Last Name:
+            <input id="lname" type="text" ng-model="lname"> <br>
+            Phone Number:
+            <input id="pnumber" type="text" ng-model="pnumber"> <br> <br>
+            <div ng-bind="ctrl.deleteRes"></div>
+            <br> <br>
+        </div>
+        <script>
+                    var app = angular.module('myApp', ['ngRoute']);
+                    app.controller('myControl', ['$http', function ($http) {
+                            var self = this;
+                            self.show = false;
+                            self.msg = "We have access to our angular module";
+                            self.url = "http://localhost:8084/module2RESTFUL2/api/person/";
+                            self.getAll = function () {
+                                $http.get(self.url + 'all').then(function (response) {
+                                    self.people = response.data;
+                                }, function (error) {
+                                    self.error = error.msg;
+                                    self.show = true;
+                                });
+                            };
+                            
+                            self.editPerson = function(pid, fn, ln, pn) {
+                                
+                                var person = {
+                                    personid : pid,
+                                    fname : fn,
+                                    lname : ln,
+                                    pnumber : pn
+                                };
+                                
+                                console.log(person);
+                                
+                                $http.put(self.url, JSON.stringify(person)).then(function (response) {
+                                    self.editRes = response.data;
+                                    self.getAll();
+                                }, function (error) {
+                                    self.error = error.msg;
+                                    self.show = true;
+                                });
+                            };
+                            
+                            self.deletePerson = function(id) {
+                                $http.delete(self.url + id).then(function (response) {
+                                    self.deleteRes = response.data;
+                                    self.getAll()
+                                }, function (error) {
+                                    self.error = error.msg;
+                                    self.show = true;
+                                });
+                            };
+                            self.addPerson = function (fn, ln, pn) {
+                                var person = {
+                                    fname : fn,
+                                    lname : ln,
+                                    pnumber : pn
+                                };
+                                $http.post(self.url, JSON.stringify(person)).then(function (response) {
+                                    self.addRes = response.data;
+                                    self.getAll();
+                                }, function (error) {
+                                    self.error = error.msg;
+                                    self.show = true;
+                                });
+                            };
+
+                            self.getAll();
+
+                        }]);
+        </script>
+
+    </body>
+</html>

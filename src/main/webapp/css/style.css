@@ -14,9 +14,20 @@ and open the template in the editor.
     
 }
 
+.thead {
+    
+    background-color: #4CAF50;
+    color: white;
+    
+}
+
 .tabletd {
     
     border : 1px solid grey;
     
+}
+
+.tbody:nth-child(odd) {
+    background: lightblue;
 }
 

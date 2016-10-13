@@ -65,7 +65,7 @@ function loadEvents() {
         };
         $.ajax({
             url: 'api/person',
-            type: 'PUT',
+            type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(person),
             success: function (res) {
@@ -116,7 +116,7 @@ function editable() {
         };
         $.ajax({
             url: 'api/person',
-            type: 'POST',
+            type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(person),
             success: function (res) {

@@ -17,7 +17,7 @@ public interface IFacade {
     
     public void addEntityManagerFactory(EntityManagerFactory emf);
     public Person addPerson(Person p);
-    public Person deletePerson(int id);
+    public void deletePerson(int id);
     public Person getPerson(int id);
     public List getPeople();
     public Person editPerson(Person p);
